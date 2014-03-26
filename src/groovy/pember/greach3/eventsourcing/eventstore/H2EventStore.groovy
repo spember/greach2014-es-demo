@@ -1,8 +1,6 @@
 package pember.greach3.eventsourcing.eventstore
 
-import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
-
 import javax.sql.DataSource
 
 /**

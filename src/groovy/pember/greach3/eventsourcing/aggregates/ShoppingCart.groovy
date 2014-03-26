@@ -5,7 +5,7 @@ import groovy.json.JsonBuilder
 import pember.greach3.eventsourcing.eventstore.Aggregate
 
 @Validateable
-class ShoppingCart implements Aggregate{
+class ShoppingCart implements Aggregate {
     String id
     int revision = 0
     int itemCount = 0
@@ -20,8 +20,6 @@ class ShoppingCart implements Aggregate{
     }
 
     ShoppingCart applySnapshot(data) {
-        //id = data.id
-
         def relations = data[0]
         def properties = data[1]
 
