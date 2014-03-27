@@ -11,6 +11,7 @@ import pember.greach3.eventsourcing.eventstore.BaseEvent
 class RemoveItemEvent extends BaseEvent{
 
     static String type = "cart_remove_item"
+
     String sku
 
     RemoveItemEvent(ShoppingCart cart, Date date, String sku) {

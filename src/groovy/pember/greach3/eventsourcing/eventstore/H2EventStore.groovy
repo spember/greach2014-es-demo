@@ -35,16 +35,16 @@ class H2EventStore implements EventStore{
      */
     private initializeTables() {
         println "Creating Event Store Tables"
-        sql.execute('''
+        sql.execute '''
             create table if not exists aggregates (
                 id varchar(100) primary key not null,
                 type varchar(256) not null,
                 display_name varchar(256),
                 revision integer not null
             )
-        ''')
+        '''
 
-        sql.execute('''
+        sql.execute '''
             create table if not exists events (
                 aggregate_id varchar(100) not null,
                 type varchar(25) not null,
@@ -56,9 +56,9 @@ class H2EventStore implements EventStore{
                     references aggregates(id)
                     on delete cascade
             )
-        ''')
+        '''
 
-        sql.execute('''
+        sql.execute '''
             create table if not exists snapshots (
                 aggregate_id varchar(100) not null,
                 revision integer not null,
@@ -68,15 +68,33 @@ class H2EventStore implements EventStore{
                     references aggregates(id)
                     on delete cascade
             )
-        ''')
+        '''
     }
 
+    /*
 
+        Event Sourcing Retrieval Methods / Queries
+
+     */
+
+    /**
+     *
+     * Main entry point
+     * Loads and returns the sql rows for all events for an Aggregate
+     *
+      * @param aggregate
+     * @return
+     */
     def replay(Aggregate aggregate) {
-        //def query = "select * from events where aggregate_id = ? order by revision"
         loadEvents aggregate.id
     }
 
+    /**
+     * Same as replay(Aggregate aggregate), but only up to a specific revision
+     * @param aggregate
+     * @param revision
+     * @return
+     */
     def replay(Aggregate aggregate, int revision) {
         loadEvents aggregate.id, "and revision <= ?", [revision]
     }
@@ -95,6 +113,8 @@ class H2EventStore implements EventStore{
         def query = "select * from events where aggregate_id = ? $constraints order by revision"
         sql.rows query, [aggregateId] + params
     }
+
+    // the next three methods could have their queries combined / abstracted, but I was feeling lazy
 
     def loadSnapshot(Aggregate aggregate, int revisionMax) {
         sql.rows "select * from snapshots where aggregate_id = ? and revision <= ? order by revision limit 1", [aggregate.id, revisionMax]
@@ -119,8 +139,16 @@ class H2EventStore implements EventStore{
         insert aggregateId, expectedRevision, [event]
     }
 
+    /*
+
+        Event Sourcing Insertion Methods / Queries
+
+     */
+
     /**
      * As one might imagine, inserts a list of events for a specific Aggregate id
+     *
+     * Main entry point for adding to the store
      *
      * @param aggregateId
      * @param expectedRevision the lowest version in the events list.
@@ -158,12 +186,25 @@ class H2EventStore implements EventStore{
         }
     }
 
+    /**
+     * Used by insert() to check that the events are not coming in out of order
+     *
+     * @param aggregateId
+     * @return
+     */
     private selectCurrentAggregateVersion(aggregateId) {
         def rows = sql.rows "select revision from aggregates where id=:id", [id:aggregateId]
         assert rows.size() <= 1
         rows.revision[0]
     }
 
+    /**
+     * Creates a new aggregate. Creating it from an Event is from work by people smarter than I on this subject; I would recommend
+     * creating an Aggregate outside of the 'insert()' method
+     *
+     * @param event
+     * @return
+     */
     private insertNewAggregateFromEvent(Event event) {
         sql.execute "insert into aggregates (id, type, revision) values (?, ?, ?)", [event.getAggregateId(), event.getAggregateType(), 0]
     }
@@ -172,6 +213,13 @@ class H2EventStore implements EventStore{
         sql.execute "Insert into events(aggregate_id, type, data, revision, date_created) values (?, ?, ?, ?, ?)", [event.getAggregateId(), event.type, event.serialize(), revision, new Date()]
     }
 
+    /**
+     * The only update in the system. Used to increment the Aggregate's revision to match the revision number of the most recent event
+     *
+     * @param aggregateId
+     * @param revision
+     * @return
+     */
     private updateAggregateRevision(aggregateId, revision) {
         sql.execute "Update aggregates set revision = ? where aggregates.id = ?", [revision, aggregateId]
     }

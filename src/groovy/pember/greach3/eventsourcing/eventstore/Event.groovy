@@ -15,5 +15,5 @@ interface Event {
     abstract public getAggregateId()
 
     abstract public serialize()
-    abstract public createFromRowData(Aggregate aggregate, String data)
+    abstract public createFromRowData(Aggregate aggregate, Date date, String data)
 }

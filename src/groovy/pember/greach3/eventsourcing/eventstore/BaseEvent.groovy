@@ -2,15 +2,12 @@ package pember.greach3.eventsourcing.eventstore
 
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-import pember.greach3.eventsourcing.eventstore.Aggregate
-import pember.greach3.eventsourcing.eventstore.Event
-
 /**
  *
  * @author spember
  *
  * */
-class BaseEvent implements Event {
+ class BaseEvent implements Event {
 
     Aggregate aggregate
     Date date
@@ -31,7 +28,7 @@ class BaseEvent implements Event {
         return ""
     }
 
-    static createFromRowData(Aggregate aggregate, String data) {
+    static createFromRowData(Aggregate aggregate, Date date, String data) {
         return null
     }
 

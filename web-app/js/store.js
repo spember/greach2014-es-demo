@@ -32,7 +32,7 @@
                     store.$cartProducts.append('<button class="pure-button pure-button-primary checkout">Checkout / Purchase</button>')
                 })
                 .fail(function () {
-                    store.$cartProducts.html('<p class="error">Your cart is empty</p>');
+                    store.$cartProducts.html('<p class="error">Your cart is empty. ADD SOME THINGS TO IT, PLEASE.</p>');
                 })
 
         });

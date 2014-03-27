@@ -9,7 +9,7 @@ import pember.greach3.eventsourcing.eventstore.BaseEvent
  *
  * */
 class PurchaseEvent extends BaseEvent {
-    static String type = "cart_purchase"
+    static final String type = "cart_purchase"
 
     PurchaseEvent(ShoppingCart cart, Date date) {
         this.aggregate = cart

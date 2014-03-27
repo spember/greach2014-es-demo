@@ -1,7 +1,6 @@
 package pember.greach3.eventsourcing.eventstore
 
 import groovy.json.JsonSlurper
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 /**
  *
@@ -36,7 +35,7 @@ class BaseEventLoader implements EventLoader {
             def data = new JsonSlurper().parseText(snapshot.CURRENT_SERIALIZED_STATE?.asciiStream?.text)
             aggregate.applySnapshot(data)
         }
-        def rows = eventStore.replayFromRevision(aggregate, aggregate.revision)
+        def rows = eventStore.replayFromRevision aggregate, aggregate.revision
         applyEvents(aggregate, rows)
     }
 
@@ -60,6 +59,6 @@ class BaseEventLoader implements EventLoader {
     }
 
     def loadRawEventStreamForAggregate(Aggregate aggregate) {
-        parseEvents(aggregate, eventStore.replay(aggregate))
+        parseEvents aggregate, eventStore.replay(aggregate)
     }
 }

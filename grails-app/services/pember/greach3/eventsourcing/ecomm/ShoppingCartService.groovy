@@ -32,7 +32,7 @@ class ShoppingCartService {
         // find the current user's cart's aggregateId
         def mapping = UserShoppingCart.findByUser(springSecurityService.getCurrentUser())
         // load that aggregate
-        def rows = eventStore.loadAggregate(mapping.shoppingCartId)
+        def rows = eventStore.loadAggregate mapping.shoppingCartId
         def cart = new ShoppingCart()
         cart.id = rows.id
         // and replay to the current state
@@ -43,8 +43,8 @@ class ShoppingCartService {
     def create(Long userId) {
         ShoppingCart cart = new ShoppingCart()
         cart.id = randomUUID().toString()
-        log.info("Created cart with id = " + cart.id)
-        eventStore.insert(cart, 0, [new CreatedEvent(cart, new Date(), userId)])
+        log.info "Created cart with id = " + cart.id
+        eventStore.insert cart, 0, [new CreatedEvent(cart, new Date(), userId)]
         cart
     }
 

@@ -31,7 +31,7 @@ class BootStrap {
         }
 
         if (Product.count() == 0) {
-            new Product(sku: '12345-5678', imageUrl:'brown_shoes.jpg', title: 'Some Amazing Brown Shoes', description: 'It\'s like pants for your feet!', size: 'L', price: new BigDecimal(325.0)).save()
+            new Product(sku: '12345-5678', imageUrl:'brown_shoes.jpg', title: 'Some Amazing Brown Shoes', description: 'It\'s like a hat for your feet!', size: 'L', price: new BigDecimal(325.0)).save()
             new Product(sku: '86753-0912', imageUrl:'coffee_shirt.jpg', title: 'Coffee T-Shirt', description: 'It\'s like pants for your chest!', size: 'L', price: new BigDecimal(55.0)).save()
             new Product(sku: '11111-2222', imageUrl:'jeans.jpg', title: 'Jeans', description: 'It\'s like a shirt for your legs!', size: 'M', price: new BigDecimal(90.0)).save()
 
